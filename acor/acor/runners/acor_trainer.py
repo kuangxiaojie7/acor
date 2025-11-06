@@ -69,6 +69,7 @@ class ACORTrainer:
                 policy,
                 device_ids=[local_rank()] if self.device.type == "cuda" else None,
                 broadcast_buffers=False,
+                find_unused_parameters=True,
             )
 
         train_cfg = self.config["train"]
@@ -115,11 +116,11 @@ class ACORTrainer:
             buffer.reset()
 
             for step in range(train_cfg["rollout_length"]):
-                behavior_features = torch.cat([observations, last_actions], dim=-1)
+                behavior_features = torch.cat([observations, last_actions], dim=-1).detach()
                 if behavior_features.shape[-1] != behavior_input:
                     raise ValueError("Behavior feature dimension mismatch; update behavior_input in config.")
                 trust_memory.append(behavior_features, done_mask)
-                history = trust_memory.get()
+                history = trust_memory.get().detach()
 
                 with torch.cuda.amp.autocast(enabled=train_cfg.get("use_amp", True) and self.device.type == "cuda"):
                     logits, values, aux = policy(observations, positions, history, dones=done_mask)
@@ -133,15 +134,15 @@ class ACORTrainer:
                 dones = step_result.dones
 
                 buffer.add(
-                    obs=observations,
-                    pos=positions,
-                    hidden=aux["latent"],
-                    history=history,
-                    actions=actions,
-                    log_probs=log_probs,
-                    values=values,
-                    rewards=rewards,
-                    dones=dones,
+                    obs=observations.detach(),
+                    pos=positions.detach(),
+                    hidden=aux["latent"].detach(),
+                    history=history.detach(),
+                    actions=actions.detach(),
+                    log_probs=log_probs.detach(),
+                    values=values.detach(),
+                    rewards=rewards.detach(),
+                    dones=dones.detach(),
                 )
 
                 last_actions = F.one_hot(actions, num_classes=action_dim).float()

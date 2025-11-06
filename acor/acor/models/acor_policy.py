@@ -129,8 +129,20 @@ class ACORPolicy(nn.Module):
 
         max_leaders = leader_indices.shape[1]
         leader_pad_mask = leader_indices >= 0
-        leader_feat = torch.zeros(batch, max_leaders, agent_features.shape[-1], device=obs.device)
-        leader_pos = torch.zeros(batch, max_leaders, positions.shape[-1], device=positions.device)
+        leader_feat = torch.zeros(
+            batch,
+            max_leaders,
+            agent_features.shape[-1],
+            device=obs.device,
+            dtype=agent_features.dtype,
+        )
+        leader_pos = torch.zeros(
+            batch,
+            max_leaders,
+            positions.shape[-1],
+            device=positions.device,
+            dtype=positions.dtype,
+        )
 
         for b in range(batch):
             valid = leader_pad_mask[b]
@@ -146,7 +158,13 @@ class ACORPolicy(nn.Module):
             device=obs.device,
             dtype=torch.long,
         )
-        leader_weights = torch.zeros(batch, max_leaders, self.leader_k, device=obs.device)
+        leader_weights = torch.zeros(
+            batch,
+            max_leaders,
+            self.leader_k,
+            device=obs.device,
+            dtype=edge_weights.dtype,
+        )
 
         for b in range(batch):
             valid = leader_pad_mask[b]
@@ -196,7 +214,7 @@ class ACORPolicy(nn.Module):
             2,
             safe_slots.unsqueeze(-1).expand(batch, agents, neighbor_idx.shape[-1], leader_latent.shape[-1]),
         )
-        mask = (neighbor_slots >= 0).float()
+        mask = (neighbor_slots >= 0).to(edge_weights.dtype)
         broadcast = torch.sum(leader_messages * mask.unsqueeze(-1) * edge_weights.unsqueeze(-1), dim=-2)
 
         fused = torch.cat([agent_latent, broadcast, behavior_latent], dim=-1)

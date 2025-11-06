@@ -38,7 +38,7 @@
 
 4. **单卡运行 ACOR**  
    ```bash
-   python -m acor.scripts.train_acor \
+   python -m scripts.train_acor \
        --config configs/acor_spread.yaml \
        --output_dir runs \
        --run_name acor_single
@@ -46,7 +46,7 @@
 
 5. **单卡运行 MAPPO 基线**  
    ```bash
-   python -m acor.scripts.train_mappo \
+   python -m scripts.train_mappo \
        --config configs/mappo_spread.yaml \
        --output_dir runs \
        --run_name mappo_single
@@ -55,14 +55,19 @@
 6. **多卡（DDP）运行**  
    将 `--nproc_per_node` 设为 GPU 数量，例如 4 卡：  
    ```bash
-   torchrun --nproc_per_node=4 -m acor.scripts.train_acor \
+   torchrun --nproc_per_node=4 -m scripts.train_acor \
        --config configs/acor_spread.yaml \
        --output_dir runs \
        --run_name acor_ddp
    ```
+   ```bash
+   # 单行命令，4卡运行 ACOR
+   torchrun --nproc_per_node=4 -m scripts.train_acor --config configs/acor_spread.yaml --output_dir runs --run_name acor_4gpu
+   ```
+
    MAPPO 同理：  
    ```bash
-   torchrun --nproc_per_node=4 -m acor.scripts.train_mappo \
+   torchrun --nproc_per_node=4 -m scripts.train_mappo \
        --config configs/mappo_spread.yaml \
        --output_dir runs \
        --run_name mappo_ddp
