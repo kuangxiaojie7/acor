@@ -42,3 +42,4 @@ class RewardNormalizer:
         if self.clip_value is not None:
             normalized = normalized.clamp(-self.clip_value, self.clip_value)
         return normalized
+    

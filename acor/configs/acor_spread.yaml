@@ -49,3 +49,4 @@ train:
 hardware:
   device: cuda
   backend: nccl
+  

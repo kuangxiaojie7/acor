@@ -55,6 +55,13 @@
        --output_dir runs \
        --run_name mappo_single
    ```
+   ���� MAPPO-Light ͬ����
+   ```bash
+   python -m scripts.train_mappo_light \
+       --config configs/mappo_light.yaml \
+       --output_dir runs \
+       --run_name mappo_light_single
+   ```
 
 6. **多卡（DDP）运行**  
    将 `--nproc_per_node` 设为 GPU 数量，例如 4 卡：  
