@@ -48,18 +48,18 @@
    python -m scripts.train_acor --config configs/acor_spread.yaml --output_dir runs --run_name acor_1gpu
    ```
 
-5. **单卡运行 MAPPO 基线**  
+5. **�������� MAPPO ����**  
    ```bash
-   python -m scripts.train_mappo \
-       --config configs/mappo_spread.yaml \
-       --output_dir runs \
+   python -m scripts.train_mappo \\
+       --config configs/mappo_spread.yaml \\
+       --output_dir runs \\
        --run_name mappo_single
    ```
-   ���� MAPPO-Light ͬ����
+   ���� MAPPO-Light ��汾��
    ```bash
-   python -m scripts.train_mappo_light \
-       --config configs/mappo_light.yaml \
-       --output_dir runs \
+   python -m scripts.train_mappo_light \\
+       --config configs/mappo_light.yaml \\
+       --output_dir runs \\
        --run_name mappo_light_single
    ```
 
